@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sudoku Solver - Notebook that solves 9x9 Sudoku boards, classic or diagonal, using integer programming.</title>
+<meta name="description" content="Jupyter notebook that solves 9x9 Sudoku, classic or diagonal, by modeling it as an integer linear program with PuLP.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4ead4">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121110">
+<link rel="canonical" href="https://voaneves.github.io/sudoku-solver/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20width%3D%22512%22%20height%3D%22512%22%20role%3D%22img%22%20aria-label%3D%22Sudoku%20Solver%20logo%22%3E%20%20%3Cpath%20fill%3D%22%230a0a0a%22%20d%3D%22M256%208a248%20248%200%200%200%200%20496Z%22%2F%3E%20%20%3Cpath%20fill%3D%22%23f4ead4%22%20d%3D%22M256%208a248%20248%200%200%201%200%20496Z%22%2F%3E%20%20%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%22248%22%20fill%3D%22none%22%20stroke%3D%22%230a0a0a%22%20stroke-width%3D%2216%22%2F%3E%20%20%3Cdefs%3E%20%20%20%20%3CclipPath%20id%3D%22vn-l%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22256%22%20height%3D%22512%22%2F%3E%3C%2FclipPath%3E%20%20%20%20%3CclipPath%20id%3D%22vn-r%22%3E%3Crect%20x%3D%22256%22%20y%3D%220%22%20width%3D%22256%22%20height%3D%22512%22%2F%3E%3C%2FclipPath%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20fill%3D%22%23f4ead4%22%20clip-path%3D%22url%28%23vn-l%29%22%20d%3D%22M200.4%20290.3Q191%20290.3%20185%20287.6Q179%20284.8%20175.6%20282.1Q172.1%20279.4%20170.9%20279.4Q170.2%20279.4%20168.6%20281.1Q167%20282.8%20165.2%20285Q163.4%20287.2%20161.8%20289Q160.2%20290.7%20159.3%20290.7Q158.8%20290.7%20158.1%20290.3Q157.4%20289.8%20157.1%20289L149.5%20245.1Q149.5%20244.5%20149.5%20244.2Q149.5%20243.8%20149.8%20243.6Q150.1%20243.4%20150.4%20243.7Q150.8%20243.9%20151%20244.3Q159.6%20261.7%20167.5%20271.2Q175.4%20280.8%20183.1%20284.5Q190.7%20288.3%20198.2%20288.3Q209.3%20288.3%20215.8%20282.3Q222.4%20276.2%20222.4%20264.6Q222.4%20257.4%20219.5%20251.4Q216.5%20245.3%20209.5%20240.3Q202.4%20235.2%20190.2%20230.8Q174.1%20225.1%20164.5%20218.3Q154.9%20211.5%20150.7%20203.1Q146.4%20194.7%20146.4%20184.4Q146.4%20172.4%20152.5%20163.2Q158.7%20153.9%20169.4%20148.8Q180.1%20143.7%20193.9%20143.7Q202.3%20143.7%20207.9%20145.7Q213.6%20147.8%20216.8%20149.9Q220.1%20152%20221.6%20152Q223%20152%20225.6%20149.8Q228.3%20147.6%20230.8%20145.4Q233.4%20143.3%20234.5%20143.3Q234.9%20143.3%20235.4%20143.6Q235.8%20143.9%20235.9%20144.7L246.8%20188.2Q246.9%20188.8%20246.8%20189.2Q246.8%20189.6%20246.5%20189.8Q246.2%20189.8%20245.8%20189.6Q245.5%20189.4%20245.2%20189Q236%20172%20227.9%20162.6Q219.7%20153.1%20211.8%20149.4Q203.9%20145.6%20195.5%20145.6Q184.9%20145.6%20178%20152.5Q171.2%20159.3%20171.2%20171.3Q171.2%20178.8%20174%20184.9Q176.8%20191.1%20183.6%20196.3Q190.4%20201.6%20202.1%20205.7Q218.7%20211.8%20228.4%20218.7Q238.1%20225.5%20242.2%20233.4Q246.2%20241.3%20246.2%20250.9Q246.2%20261.9%20240.8%20270.9Q235.4%20279.9%20225.2%20285.1Q214.9%20290.3%20200.4%20290.3ZM301.6%20237.9%20357.9%20172.7Q363%20167.3%20364.4%20162.2Q365.7%20157.1%20363.8%20153.3Q361.8%20149.5%20356.7%20148L351.5%20147.1Q350.9%20147.1%20350.6%20146.9Q350.4%20146.7%20350.4%20146.3Q350.4%20146%20350.6%20145.8Q350.9%20145.7%20351.2%20145.7H393.7Q394.2%20145.7%20394.4%20145.9Q394.5%20146.1%20394.5%20146.3Q394.5%20146.7%20394.3%20146.9Q394%20147.1%20393.6%20147.1Q390.6%20148%20387.6%20149.5Q384.5%20151.1%20380.7%20153.9Q376.9%20156.7%20371.9%20161.3Q366.9%20165.8%20360%20173L302.3%20239.5ZM323.5%20212.8%20343.8%20192.7%20389.2%20278Q391.4%20282.5%20393.7%20284.4Q395.9%20286.3%20400.2%20286.6Q400.5%20286.7%20400.8%20286.9Q401%20287.2%20401%20287.5Q401%20287.8%20400.7%20288Q400.4%20288.2%20400%20288.2H349.5Q349.1%20288.2%20348.9%20287.9Q348.7%20287.7%20348.7%20287.4Q348.7%20286.9%20348.9%20286.8Q349.1%20286.7%20349.7%20286.7L357.5%20285.7Q359.1%20285.5%20359.6%20284.1Q360.1%20282.7%20358.4%20279.4ZM307%20282.7Q307%20283.9%20308%20284.5Q309.1%20285.1%20310.9%20285.5L319.2%20286.7Q319.9%20286.8%20320.2%20287Q320.5%20287.1%20320.5%20287.5Q320.5%20287.6%20320.2%20287.9Q319.9%20288.2%20319.4%20288.2H266.1Q265.7%20288.2%20265.4%20287.9Q265.2%20287.6%20265.2%20287.5Q265.2%20286.9%20266.3%20286.7L274.5%20285.5Q276.6%20285.2%20277.6%20284.5Q278.5%20283.9%20278.5%20282.7V151.2Q278.5%20150%20277.6%20149.3Q276.6%20148.6%20274.5%20148.4L266.3%20147.1Q265.2%20147%20265.2%20146.3Q265.2%20146%20265.4%20145.8Q265.7%20145.7%20266.1%20145.7H319.4Q320%20145.7%20320.2%20145.8Q320.3%20146%20320.3%20146.3Q320.3%20147%20319.2%20147.1L310.9%20148.4Q309.1%20148.6%20308%20149.3Q307%20150%20307%20151.2Z%22%2F%3E%20%20%3Cpath%20fill%3D%22%230a0a0a%22%20clip-path%3D%22url%28%23vn-r%29%22%20d%3D%22M200.4%20290.3Q191%20290.3%20185%20287.6Q179%20284.8%20175.6%20282.1Q172.1%20279.4%20170.9%20279.4Q170.2%20279.4%20168.6%20281.1Q167%20282.8%20165.2%20285Q163.4%20287.2%20161.8%20289Q160.2%20290.7%20159.3%20290.7Q158.8%20290.7%20158.1%20290.3Q157.4%20289.8%20157.1%20289L149.5%20245.1Q149.5%20244.5%20149.5%20244.2Q149.5%20243.8%20149.8%20243.6Q150.1%20243.4%20150.4%20243.7Q150.8%20243.9%20151%20244.3Q159.6%20261.7%20167.5%20271.2Q175.4%20280.8%20183.1%20284.5Q190.7%20288.3%20198.2%20288.3Q209.3%20288.3%20215.8%20282.3Q222.4%20276.2%20222.4%20264.6Q222.4%20257.4%20219.5%20251.4Q216.5%20245.3%20209.5%20240.3Q202.4%20235.2%20190.2%20230.8Q174.1%20225.1%20164.5%20218.3Q154.9%20211.5%20150.7%20203.1Q146.4%20194.7%20146.4%20184.4Q146.4%20172.4%20152.5%20163.2Q158.7%20153.9%20169.4%20148.8Q180.1%20143.7%20193.9%20143.7Q202.3%20143.7%20207.9%20145.7Q213.6%20147.8%20216.8%20149.9Q220.1%20152%20221.6%20152Q223%20152%20225.6%20149.8Q228.3%20147.6%20230.8%20145.4Q233.4%20143.3%20234.5%20143.3Q234.9%20143.3%20235.4%20143.6Q235.8%20143.9%20235.9%20144.7L246.8%20188.2Q246.9%20188.8%20246.8%20189.2Q246.8%20189.6%20246.5%20189.8Q246.2%20189.8%20245.8%20189.6Q245.5%20189.4%20245.2%20189Q236%20172%20227.9%20162.6Q219.7%20153.1%20211.8%20149.4Q203.9%20145.6%20195.5%20145.6Q184.9%20145.6%20178%20152.5Q171.2%20159.3%20171.2%20171.3Q171.2%20178.8%20174%20184.9Q176.8%20191.1%20183.6%20196.3Q190.4%20201.6%20202.1%20205.7Q218.7%20211.8%20228.4%20218.7Q238.1%20225.5%20242.2%20233.4Q246.2%20241.3%20246.2%20250.9Q246.2%20261.9%20240.8%20270.9Q235.4%20279.9%20225.2%20285.1Q214.9%20290.3%20200.4%20290.3ZM301.6%20237.9%20357.9%20172.7Q363%20167.3%20364.4%20162.2Q365.7%20157.1%20363.8%20153.3Q361.8%20149.5%20356.7%20148L351.5%20147.1Q350.9%20147.1%20350.6%20146.9Q350.4%20146.7%20350.4%20146.3Q350.4%20146%20350.6%20145.8Q350.9%20145.7%20351.2%20145.7H393.7Q394.2%20145.7%20394.4%20145.9Q394.5%20146.1%20394.5%20146.3Q394.5%20146.7%20394.3%20146.9Q394%20147.1%20393.6%20147.1Q390.6%20148%20387.6%20149.5Q384.5%20151.1%20380.7%20153.9Q376.9%20156.7%20371.9%20161.3Q366.9%20165.8%20360%20173L302.3%20239.5ZM323.5%20212.8%20343.8%20192.7%20389.2%20278Q391.4%20282.5%20393.7%20284.4Q395.9%20286.3%20400.2%20286.6Q400.5%20286.7%20400.8%20286.9Q401%20287.2%20401%20287.5Q401%20287.8%20400.7%20288Q400.4%20288.2%20400%20288.2H349.5Q349.1%20288.2%20348.9%20287.9Q348.7%20287.7%20348.7%20287.4Q348.7%20286.9%20348.9%20286.8Q349.1%20286.7%20349.7%20286.7L357.5%20285.7Q359.1%20285.5%20359.6%20284.1Q360.1%20282.7%20358.4%20279.4ZM307%20282.7Q307%20283.9%20308%20284.5Q309.1%20285.1%20310.9%20285.5L319.2%20286.7Q319.9%20286.8%20320.2%20287Q320.5%20287.1%20320.5%20287.5Q320.5%20287.6%20320.2%20287.9Q319.9%20288.2%20319.4%20288.2H266.1Q265.7%20288.2%20265.4%20287.9Q265.2%20287.6%20265.2%20287.5Q265.2%20286.9%20266.3%20286.7L274.5%20285.5Q276.6%20285.2%20277.6%20284.5Q278.5%20283.9%20278.5%20282.7V151.2Q278.5%20150%20277.6%20149.3Q276.6%20148.6%20274.5%20148.4L266.3%20147.1Q265.2%20147%20265.2%20146.3Q265.2%20146%20265.4%20145.8Q265.7%20145.7%20266.1%20145.7H319.4Q320%20145.7%20320.2%20145.8Q320.3%20146%20320.3%20146.3Q320.3%20147%20319.2%20147.1L310.9%20148.4Q309.1%20148.6%20308%20149.3Q307%20150%20307%20151.2Z%22%2F%3E%20%20%3Ccircle%20cx%3D%22256%22%20cy%3D%22344.7%22%20r%3D%2224%22%20fill%3D%22%23d70000%22%2F%3E%3C%2Fsvg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sudoku Solver - Notebook that solves 9x9 Sudoku boards, classic or diagonal, using integer programming.">
+<meta property="og:description" content="Jupyter notebook that solves 9x9 Sudoku, classic or diagonal, by modeling it as an integer linear program with PuLP.">
+<meta property="og:url" content="https://voaneves.github.io/sudoku-solver/">
+<meta property="og:image" content="https://voaneves.github.io/sudoku-solver/logo-512.png">
+<meta property="og:image:alt" content="Sudoku Solver logo">
+<meta name="twitter:card" content="summary">
+<style>
+:root{
+  --surface:#f4ead4;
+  --surface-alt:#e8dec5;
+  --text:#0a0a0a;
+  --muted:#4a4437;
+  --link:#b80000;
+  --focus:#b80000;
+  --btn-primary-fill:#0a0a0a;
+  --btn-primary-text:#f4ead4;
+  --btn-primary-signal:#ff3838;
+  --btn-secondary-fill:#f4ead4;
+  --btn-secondary-text:#0a0a0a;
+  --btn-secondary-border:#0a0a0a;
+  --btn-command-prompt:#b80000;
+  --logo-ink:#0a0a0a;
+  --logo-paper:#f4ead4;
+  --logo-ring:#0a0a0a;
+  --logo-signal:#d70000;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+  --surface:#121110;
+    --surface-alt:#1c1a17;
+    --text:#f4ead4;
+    --muted:#b8ae98;
+    --link:#ff5a5a;
+    --focus:#ff5a5a;
+    --btn-primary-fill:#e8dec5;
+    --btn-primary-text:#0a0a0a;
+    --btn-primary-signal:#b80000;
+    --btn-secondary-fill:#1c1a17;
+    --btn-secondary-text:#e8dec5;
+    --btn-secondary-border:#8a816f;
+    --btn-command-prompt:#ff5a5a;
+    --logo-ink:#0a0a0a;
+    --logo-paper:#f4ead4;
+    --logo-ring:#e8dec5;
+    --logo-signal:#d70000;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--surface);color:var(--text);font:1.0625rem/1.6 var(--sans)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+.skip{position:absolute;left:1rem;top:-4rem;padding:.75rem 1rem;background:var(--btn-primary-fill);color:var(--btn-primary-text);border-radius:4px;font-weight:600;z-index:10}
+.skip:focus{top:1rem}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.wrap{width:100%;max-width:60rem;margin:0 auto;padding:0 1rem}
+.hero{padding:4rem 0 3rem;text-align:center}
+.logo{display:block;margin:0 auto 1.5rem;width:7rem;height:7rem}
+.logo-img{display:block;margin:0 auto 1.5rem;max-width:100%;height:auto}
+h1{margin:0;font-size:clamp(2rem,6vw,3.25rem);line-height:1.1;letter-spacing:-.02em}
+.tagline{margin:1rem auto 0;max-width:34rem;font-size:clamp(1.15rem,3.2vw,1.45rem);font-weight:700;line-height:1.35}
+.lead{margin:1rem auto 0;max-width:36rem;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin:2rem 0 0;padding:0;list-style:none}
+.btn{display:inline-flex;align-items:center;gap:.6rem;min-height:3rem;padding:0 1.25rem;border:1.5px solid transparent;border-radius:4px;font-weight:600;font-size:1rem;line-height:1;text-decoration:none;max-width:100%}
+.btn-primary{background:var(--btn-primary-fill);color:var(--btn-primary-text)}
+.btn-secondary{background:var(--btn-secondary-fill);color:var(--btn-secondary-text);border-color:var(--btn-secondary-border)}
+.btn-command{font-family:var(--mono);font-weight:500;font-size:.9375rem}
+.dot{width:.5rem;height:.5rem;border-radius:50%;background:var(--btn-primary-signal);flex:none}
+.prompt{color:var(--btn-command-prompt)}
+@media (prefers-reduced-motion:no-preference){.btn{transition:transform .15s ease}.btn:hover{transform:translateY(-1px)}}
+section{padding:2.5rem 0}
+h2{margin:0 0 1.25rem;font-size:1.5rem;line-height:1.25;letter-spacing:-.01em}
+.features{display:grid;gap:1rem;margin:0;padding:0;list-style:none;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
+.features li{padding:1.25rem;border-radius:8px;background:var(--surface-alt)}
+.features h3{margin:0 0 .35rem;font-size:1.0625rem}
+.features p{margin:0}
+.shot{margin:0}
+.shot img{display:block;width:100%;height:auto;border-radius:8px;background:var(--surface-alt)}
+.contact{text-align:center}
+.contact p{margin:0 auto 1.25rem;max-width:34rem;color:var(--muted)}
+a{color:var(--link);text-underline-offset:.2em}
+a.btn{text-decoration:none}
+footer{padding:2rem 0 3rem;color:var(--muted);font-size:.9375rem;text-align:center}
+footer p{margin:0}
+@media (max-width:30rem){.hero{padding-top:2.5rem}.btn{width:100%;justify-content:center}.actions{flex-direction:column;align-items:stretch}.actions li{display:flex}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main">
+  <div class="wrap">
+    <section class="hero" aria-labelledby="name">
+      <svg class="logo" viewBox="0 0 512 512" width="112" height="112" aria-hidden="true" focusable="false">
+  <path fill="var(--logo-ink)" d="M256 8a248 248 0 0 0 0 496Z"/>
+  <path fill="var(--logo-paper)" d="M256 8a248 248 0 0 1 0 496Z"/>
+  <circle cx="256" cy="256" r="248" fill="none" stroke="var(--logo-ring)" stroke-width="16"/>
+  <defs>
+    <clipPath id="vn-hero-l"><rect x="0" y="0" width="256" height="512"/></clipPath>
+    <clipPath id="vn-hero-r"><rect x="256" y="0" width="256" height="512"/></clipPath>
+  </defs>
+  <path fill="var(--logo-paper)" clip-path="url(#vn-hero-l)" d="M200.4 290.3Q191 290.3 185 287.6Q179 284.8 175.6 282.1Q172.1 279.4 170.9 279.4Q170.2 279.4 168.6 281.1Q167 282.8 165.2 285Q163.4 287.2 161.8 289Q160.2 290.7 159.3 290.7Q158.8 290.7 158.1 290.3Q157.4 289.8 157.1 289L149.5 245.1Q149.5 244.5 149.5 244.2Q149.5 243.8 149.8 243.6Q150.1 243.4 150.4 243.7Q150.8 243.9 151 244.3Q159.6 261.7 167.5 271.2Q175.4 280.8 183.1 284.5Q190.7 288.3 198.2 288.3Q209.3 288.3 215.8 282.3Q222.4 276.2 222.4 264.6Q222.4 257.4 219.5 251.4Q216.5 245.3 209.5 240.3Q202.4 235.2 190.2 230.8Q174.1 225.1 164.5 218.3Q154.9 211.5 150.7 203.1Q146.4 194.7 146.4 184.4Q146.4 172.4 152.5 163.2Q158.7 153.9 169.4 148.8Q180.1 143.7 193.9 143.7Q202.3 143.7 207.9 145.7Q213.6 147.8 216.8 149.9Q220.1 152 221.6 152Q223 152 225.6 149.8Q228.3 147.6 230.8 145.4Q233.4 143.3 234.5 143.3Q234.9 143.3 235.4 143.6Q235.8 143.9 235.9 144.7L246.8 188.2Q246.9 188.8 246.8 189.2Q246.8 189.6 246.5 189.8Q246.2 189.8 245.8 189.6Q245.5 189.4 245.2 189Q236 172 227.9 162.6Q219.7 153.1 211.8 149.4Q203.9 145.6 195.5 145.6Q184.9 145.6 178 152.5Q171.2 159.3 171.2 171.3Q171.2 178.8 174 184.9Q176.8 191.1 183.6 196.3Q190.4 201.6 202.1 205.7Q218.7 211.8 228.4 218.7Q238.1 225.5 242.2 233.4Q246.2 241.3 246.2 250.9Q246.2 261.9 240.8 270.9Q235.4 279.9 225.2 285.1Q214.9 290.3 200.4 290.3ZM301.6 237.9 357.9 172.7Q363 167.3 364.4 162.2Q365.7 157.1 363.8 153.3Q361.8 149.5 356.7 148L351.5 147.1Q350.9 147.1 350.6 146.9Q350.4 146.7 350.4 146.3Q350.4 146 350.6 145.8Q350.9 145.7 351.2 145.7H393.7Q394.2 145.7 394.4 145.9Q394.5 146.1 394.5 146.3Q394.5 146.7 394.3 146.9Q394 147.1 393.6 147.1Q390.6 148 387.6 149.5Q384.5 151.1 380.7 153.9Q376.9 156.7 371.9 161.3Q366.9 165.8 360 173L302.3 239.5ZM323.5 212.8 343.8 192.7 389.2 278Q391.4 282.5 393.7 284.4Q395.9 286.3 400.2 286.6Q400.5 286.7 400.8 286.9Q401 287.2 401 287.5Q401 287.8 400.7 288Q400.4 288.2 400 288.2H349.5Q349.1 288.2 348.9 287.9Q348.7 287.7 348.7 287.4Q348.7 286.9 348.9 286.8Q349.1 286.7 349.7 286.7L357.5 285.7Q359.1 285.5 359.6 284.1Q360.1 282.7 358.4 279.4ZM307 282.7Q307 283.9 308 284.5Q309.1 285.1 310.9 285.5L319.2 286.7Q319.9 286.8 320.2 287Q320.5 287.1 320.5 287.5Q320.5 287.6 320.2 287.9Q319.9 288.2 319.4 288.2H266.1Q265.7 288.2 265.4 287.9Q265.2 287.6 265.2 287.5Q265.2 286.9 266.3 286.7L274.5 285.5Q276.6 285.2 277.6 284.5Q278.5 283.9 278.5 282.7V151.2Q278.5 150 277.6 149.3Q276.6 148.6 274.5 148.4L266.3 147.1Q265.2 147 265.2 146.3Q265.2 146 265.4 145.8Q265.7 145.7 266.1 145.7H319.4Q320 145.7 320.2 145.8Q320.3 146 320.3 146.3Q320.3 147 319.2 147.1L310.9 148.4Q309.1 148.6 308 149.3Q307 150 307 151.2Z"/>
+  <path fill="var(--logo-ink)" clip-path="url(#vn-hero-r)" d="M200.4 290.3Q191 290.3 185 287.6Q179 284.8 175.6 282.1Q172.1 279.4 170.9 279.4Q170.2 279.4 168.6 281.1Q167 282.8 165.2 285Q163.4 287.2 161.8 289Q160.2 290.7 159.3 290.7Q158.8 290.7 158.1 290.3Q157.4 289.8 157.1 289L149.5 245.1Q149.5 244.5 149.5 244.2Q149.5 243.8 149.8 243.6Q150.1 243.4 150.4 243.7Q150.8 243.9 151 244.3Q159.6 261.7 167.5 271.2Q175.4 280.8 183.1 284.5Q190.7 288.3 198.2 288.3Q209.3 288.3 215.8 282.3Q222.4 276.2 222.4 264.6Q222.4 257.4 219.5 251.4Q216.5 245.3 209.5 240.3Q202.4 235.2 190.2 230.8Q174.1 225.1 164.5 218.3Q154.9 211.5 150.7 203.1Q146.4 194.7 146.4 184.4Q146.4 172.4 152.5 163.2Q158.7 153.9 169.4 148.8Q180.1 143.7 193.9 143.7Q202.3 143.7 207.9 145.7Q213.6 147.8 216.8 149.9Q220.1 152 221.6 152Q223 152 225.6 149.8Q228.3 147.6 230.8 145.4Q233.4 143.3 234.5 143.3Q234.9 143.3 235.4 143.6Q235.8 143.9 235.9 144.7L246.8 188.2Q246.9 188.8 246.8 189.2Q246.8 189.6 246.5 189.8Q246.2 189.8 245.8 189.6Q245.5 189.4 245.2 189Q236 172 227.9 162.6Q219.7 153.1 211.8 149.4Q203.9 145.6 195.5 145.6Q184.9 145.6 178 152.5Q171.2 159.3 171.2 171.3Q171.2 178.8 174 184.9Q176.8 191.1 183.6 196.3Q190.4 201.6 202.1 205.7Q218.7 211.8 228.4 218.7Q238.1 225.5 242.2 233.4Q246.2 241.3 246.2 250.9Q246.2 261.9 240.8 270.9Q235.4 279.9 225.2 285.1Q214.9 290.3 200.4 290.3ZM301.6 237.9 357.9 172.7Q363 167.3 364.4 162.2Q365.7 157.1 363.8 153.3Q361.8 149.5 356.7 148L351.5 147.1Q350.9 147.1 350.6 146.9Q350.4 146.7 350.4 146.3Q350.4 146 350.6 145.8Q350.9 145.7 351.2 145.7H393.7Q394.2 145.7 394.4 145.9Q394.5 146.1 394.5 146.3Q394.5 146.7 394.3 146.9Q394 147.1 393.6 147.1Q390.6 148 387.6 149.5Q384.5 151.1 380.7 153.9Q376.9 156.7 371.9 161.3Q366.9 165.8 360 173L302.3 239.5ZM323.5 212.8 343.8 192.7 389.2 278Q391.4 282.5 393.7 284.4Q395.9 286.3 400.2 286.6Q400.5 286.7 400.8 286.9Q401 287.2 401 287.5Q401 287.8 400.7 288Q400.4 288.2 400 288.2H349.5Q349.1 288.2 348.9 287.9Q348.7 287.7 348.7 287.4Q348.7 286.9 348.9 286.8Q349.1 286.7 349.7 286.7L357.5 285.7Q359.1 285.5 359.6 284.1Q360.1 282.7 358.4 279.4ZM307 282.7Q307 283.9 308 284.5Q309.1 285.1 310.9 285.5L319.2 286.7Q319.9 286.8 320.2 287Q320.5 287.1 320.5 287.5Q320.5 287.6 320.2 287.9Q319.9 288.2 319.4 288.2H266.1Q265.7 288.2 265.4 287.9Q265.2 287.6 265.2 287.5Q265.2 286.9 266.3 286.7L274.5 285.5Q276.6 285.2 277.6 284.5Q278.5 283.9 278.5 282.7V151.2Q278.5 150 277.6 149.3Q276.6 148.6 274.5 148.4L266.3 147.1Q265.2 147 265.2 146.3Q265.2 146 265.4 145.8Q265.7 145.7 266.1 145.7H319.4Q320 145.7 320.2 145.8Q320.3 146 320.3 146.3Q320.3 147 319.2 147.1L310.9 148.4Q309.1 148.6 308 149.3Q307 150 307 151.2Z"/>
+  <circle cx="256" cy="344.7" r="24" fill="var(--logo-signal)"/>
+      </svg>
+      <h1 id="name">Sudoku Solver</h1>
+      <p class="tagline">Notebook that solves 9x9 Sudoku boards, classic or diagonal, using integer programming.</p>
+      <p class="lead">Jupyter notebook that solves 9x9 Sudoku, classic or diagonal, by modeling it as an integer linear program with PuLP.</p>
+      <ul class="actions">
+        <li><a class="btn btn-primary" href="https://colab.research.google.com/github/voaneves/sudoku-solver/blob/main/sudoku_solver.ipynb"><span class="dot" aria-hidden="true"></span><span>Open in Colab</span><span aria-hidden="true">&rarr;</span></a></li>
+      </ul>
+    </section>
+    <section aria-labelledby="features-title">
+      <h2 id="features-title">Highlights</h2>
+      <ul class="features">
+        <li><p>Solves 9x9 boards given as lists, with 0 for empty cells.</p></li>
+        <li><p>Supports the classic rules and the diagonal variant (diagonal=True).</p></li>
+        <li><p>Uses PuLP with the CBC solver and prints the solved grid.</p></li>
+      </ul>
+    </section>
+    <section class="contact" aria-labelledby="hire-title">
+      <h2 id="hire-title">Need something like this?</h2>
+      <p>I build and ship projects like this for teams. Tell me what you need.</p>
+      <a class="btn btn-primary" href="https://voaneves.com/en/#contact"><span class="dot" aria-hidden="true"></span><span>Let&#x27;s talk</span><span aria-hidden="true">&rarr;</span></a>
+    </section>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <p>Licensed under the MIT license. <a href="https://github.com/voaneves/sudoku-solver">GitHub</a></p>
+  </div>
+</footer>
+</body>
+</html>

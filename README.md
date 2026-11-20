@@ -1,10 +1,52 @@
-# sudoku-solver
+<a id="top"></a>
 
-> Sudoku solver in Python that models Sudoku as a **linear (integer) programming** problem and solves it with [PuLP](https://github.com/coin-or/pulp). Supports classic and diagonal Sudoku.
+<div align="center">
 
-**Keywords:** sudoku solver python, sudoku linear programming, integer programming, PuLP, constraint satisfaction, diagonal sudoku, Jupyter notebook.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/logo/logo-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/logo/logo-light.svg" />
+  <img alt="Sudoku Solver logo: the monogram SK" src="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/logo/logo-light.svg" width="112" height="112" />
+</picture>
+
+<h1>Sudoku Solver</h1>
+
+<p>
+  <strong>Notebook that solves 9x9 Sudoku boards, classic or diagonal, using integer programming.</strong><br />
+  <sub>Sudoku modeled as a linear program, solved with PuLP</sub>
+</p>
+
+<p>
+  <a href="https://voaneves.github.io/sudoku-solver/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/buttons/landing-dark.svg" /><img alt="View landing page" src="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/buttons/landing-light.svg" height="40" /></picture></a>
+  <a href="https://colab.research.google.com/github/voaneves/sudoku-solver/blob/main/sudoku_solver.ipynb"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/buttons/colab-dark.svg" /><img alt="Open in Colab" src="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/buttons/colab-light.svg" height="40" /></picture></a>
+</p>
+
+<p><sub>Need something like this? <a href="https://voaneves.com/en/#contact"><strong>Let's talk →</strong></a></sub></p>
+
+<p>
+  <a href="https://github.com/voaneves/sudoku-solver/blob/main/LICENSE"><img src="https://img.shields.io/github/license/voaneves/sudoku-solver?style=flat-square&color=0A0A0A" alt="MIT License" /></a>
+  <img src="https://img.shields.io/badge/Python-PuLP-b80000?style=flat-square" alt="Python and PuLP" />
+  <a href="https://github.com/voaneves/sudoku-solver/issues"><img src="https://img.shields.io/github/issues/voaneves/sudoku-solver?style=flat-square&color=0A0A0A" alt="Open issues" /></a>
+</p>
+
+<p>
+  <a href="#what-it-does">What it does</a> ·
+  <a href="#how-it-works-sudoku-as-a-linear-problem">How it works</a> ·
+  <a href="#running-the-notebook">Running</a> ·
+  <a href="#em-português">Português</a> ·
+  <a href="#contact">Contact</a>
+</p>
+
+</div>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/brand/rule-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/brand/rule-light.svg" />
+  <img alt="" src="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/brand/rule-light.svg" width="100%" />
+</picture>
 
 ## What it does
+
+Solves any 9x9 Sudoku, classic or diagonal, by turning the rules into an integer linear program.
 
 `sudoku_solver.ipynb` solves any 9x9 board given as a list of lists (`0` = empty cell) and prints the solved grid. It handles the standard rules and the "diagonal Sudoku" variant.
 
@@ -26,6 +68,8 @@
 - [`pulp`](https://pypi.org/project/PuLP/), the only import (`import pulp as plp`). The notebook installs it with `%pip install pulp`.
 
 ## Running the notebook
+
+Open it directly in [Google Colab](https://colab.research.google.com/github/voaneves/sudoku-solver/blob/main/sudoku_solver.ipynb), or locally:
 
 ```bash
 git clone https://github.com/voaneves/sudoku-solver.git
@@ -51,6 +95,19 @@ solve_sudoku(input_sudoku=my_board, diagonal=False)
 
 Resolvedor de Sudoku em Python que trata o jogo como um problema de programação linear inteira, com variáveis binárias (linha, coluna, valor) e restrições de célula, linha, coluna, bloco 3x3, diagonais (opcional) e valores pré-preenchidos, resolvido com a biblioteca PuLP. Para rodar: `pip install pulp jupyter` e abra `sudoku_solver.ipynb`; use `solve_sudoku(tabuleiro, diagonal=False)`, com `0` nas células vazias.
 
-## License
+## Contact
 
-MIT, see [LICENSE](LICENSE).
+<p>
+  <a href="https://voaneves.com/en/#contact"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/buttons/hire-dark.svg" /><img alt="Let's talk" src="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/buttons/hire-light.svg" height="40" /></picture></a>
+  <a href="https://voaneves.com/en/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/buttons/site-dark.svg" /><img alt="voaneves.com" src="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/buttons/site-light.svg" height="40" /></picture></a>
+</p>
+
+<a href="https://linkedin.com/in/voaneves">LinkedIn</a> · <a href="mailto:victorneves478@gmail.com">E-mail</a>
+
+<p align="center">
+  <img alt="VOANEVES mark" src="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/brand/mark-duo.svg" width="32" height="32" />
+</p>
+
+<p align="center"><sub>Released under the <a href="https://github.com/voaneves/sudoku-solver/blob/main/LICENSE">MIT License</a>.</sub></p>
+
+<p align="center"><sub><a href="#top">↑ Back to top</a></sub></p>

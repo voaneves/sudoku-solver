@@ -1,0 +1,53 @@
+{
+  "repo": "sudoku-solver",
+  "branch": "main",
+  "lang": "en",
+  "license": "MIT",
+  "name": "Sudoku Solver",
+  "tagline": "Notebook that solves 9x9 Sudoku boards, classic or diagonal, using integer programming.",
+  "description": "Jupyter notebook that solves 9x9 Sudoku, classic or diagonal, by modeling it as an integer linear program with PuLP.",
+  "logo": {
+    "mark": "SK"
+  },
+  "buttons": [
+    {
+      "id": "landing",
+      "text": "View landing page",
+      "kind": "primary",
+      "font": "sans",
+      "href": "https://voaneves.github.io/sudoku-solver/",
+      "landing": false
+    },
+    {
+      "id": "colab",
+      "text": "Open in Colab",
+      "kind": "secondary",
+      "href": "https://colab.research.google.com/github/voaneves/sudoku-solver/blob/main/sudoku_solver.ipynb",
+      "landing_kind": "primary",
+      "font": "sans"
+    },
+    {
+      "id": "hire",
+      "text": "Let's talk",
+      "kind": "primary",
+      "font": "sans",
+      "href": "https://voaneves.com/en/#contact",
+      "landing": false
+    },
+    {
+      "id": "site",
+      "text": "voaneves.com",
+      "kind": "secondary",
+      "font": "sans",
+      "href": "https://voaneves.com/en/",
+      "landing": false
+    }
+  ],
+  "features": [
+    "Solves 9x9 boards given as lists, with 0 for empty cells.",
+    "Supports the classic rules and the diagonal variant (diagonal=True).",
+    "Uses PuLP with the CBC solver and prints the solved grid."
+  ],
+  "landing": true,
+  "live_url": "https://voaneves.github.io/sudoku-solver/"
+}
