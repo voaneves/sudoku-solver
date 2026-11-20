@@ -5,7 +5,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/logo/logo-dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/logo/logo-light.svg" />
-  <img alt="Sudoku Solver logo: the monogram SK" src="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/logo/logo-light.svg" width="112" height="112" />
+  <img alt="Sudoku Solver logo: a sudoku grid, with a red dot for the solved cell" src="https://raw.githubusercontent.com/voaneves/sudoku-solver/main/assets/logo/logo-light.svg" width="112" height="112" />
 </picture>
 
 <h1>Sudoku Solver</h1>

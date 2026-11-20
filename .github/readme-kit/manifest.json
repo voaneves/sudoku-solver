@@ -7,6 +7,7 @@
   "tagline": "Notebook that solves 9x9 Sudoku boards, classic or diagonal, using integer programming.",
   "description": "Jupyter notebook that solves 9x9 Sudoku, classic or diagonal, by modeling it as an integer linear program with PuLP.",
   "logo": {
+    "glyph": "grid",
     "mark": "SK"
   },
   "buttons": [
